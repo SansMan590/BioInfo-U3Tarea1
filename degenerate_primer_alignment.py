@@ -1,15 +1,12 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-
 """
-Programa 1: Alineamiento de partidores degenerados
-Uso: ./degenerate_primer_alignment.py <secuencia_ADN> <partidor_degenerado>
+chmod +x degenerate_primer_alignment.py
+./degenerate_primer_alignment.py ACATGTATGATCTGGTGATTTGTAAGA TST
 """
 
 import sys
 import re
 
-# Tabla de códigos IUPAC -> bases posibles
+# posibles bases
 IUPAC = {
     'A': 'A',
     'T': 'T',
@@ -30,29 +27,25 @@ IUPAC = {
 
 
 def partidor_a_regex(partidor):
-    """Convierte un partidor degenerado en una expresión regular."""
     patron = ''
     for base in partidor.upper():
         if base not in IUPAC:
-            print(f'Error: base desconocida "{base}" en el partidor.')
+            print(f'Error: base "{base}" desconocida')
             sys.exit(1)
         patron += IUPAC[base]
     return patron
 
 
 def buscar_alineamientos(secuencia, partidor):
-    """Retorna lista de (posición, secuencia_alineada) para todas las coincidencias."""
     patron = partidor_a_regex(partidor)
     resultados = []
 
-    # Búsqueda con overlap: avanzamos de a 1 para no perder coincidencias traslapadas
     for i in range(len(secuencia)):
         m = re.match(patron, secuencia[i:])
         if m:
             resultados.append((i, m.group()))
 
     return resultados
-
 
 def main():
     if len(sys.argv) != 3:
